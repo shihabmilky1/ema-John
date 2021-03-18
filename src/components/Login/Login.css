@@ -1,0 +1,21 @@
+form , .buttons{
+    width: 20%;
+    padding-top: 100px;
+    margin: auto auto;
+    text-align:center;
+  }
+  .buttons{
+    padding-top: 10px;
+  }
+  input{
+    border-radius: 0;
+    padding: 10px 60px 10px 10px;
+    border: 1px solid beige;
+    margin:5px
+  }
+  button,input:focus{
+    outline:none;
+  }
+  body{
+    background: #efefef;
+  }
