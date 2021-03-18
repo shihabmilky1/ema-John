@@ -7,6 +7,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { userContext } from '../../App';
 import { useHistory, useLocation } from 'react-router';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGoogle } from '@fortawesome/free-brands-svg-icons'
+
+
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }else {
@@ -48,7 +52,7 @@ const Login = () => {
                     position:'top-center',}
                     );
                 setLoggedInUser(user);
-                  history.replace(from);        
+                  history.replace(from);     
             })
             .catch((error) => {
                 const errorMessage = error.message;
@@ -86,8 +90,25 @@ const Login = () => {
     }//handleBlur
 
     const handleGoogle= () => {
-        console.log('hi')
-    }
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth()
+  .signInWithPopup(provider)
+  .then((result) => {
+    const userBio = result.user;
+    const newUserInfo = {...user};
+    newUserInfo.name = userBio.displayName;
+    newUserInfo.email = userBio.email;
+    console.log(newUserInfo);
+        setLoggedInUser(newUserInfo);
+        history.replace(from); 
+
+}).catch((error) => {
+    var errorMessage = error.message;
+    toast.error(errorMessage,{
+        position:'top-center',}
+        );
+  });
+    }//sign in google
     return (
         <>
             <form onSubmit={handleSubmit}>
@@ -102,7 +123,8 @@ const Login = () => {
                 <input style={{background:'black',color:'white',padding:'10px 15px',cursor:'pointer'}} type="submit" value={newUser ? "Sign up" : 'Sign in'}/>
             </form>
             <div className="buttons">
-            <button onClick={handleGoogle} style={{padding:'10px 15px',background:'whitesmoke',}}>Sign In Google</button>
+            <button onClick={handleGoogle} style={{padding:'10px 15px',background:'whitesmoke',}}><FontAwesomeIcon style={{marginRight:'5px'}} icon={faGoogle} />
+            Sign In Google</button>
             </div>
             <ToastContainer />
         </>
