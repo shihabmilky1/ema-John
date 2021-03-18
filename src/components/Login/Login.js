@@ -1,24 +1,25 @@
 import React, { useState , useContext} from 'react';
 import './Login.css'
-import { ToastContainer , toast } from 'react-toastify';
 import { userContext } from '../../App';
 import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
-import { googleSignIn, initializeFramework } from './loginManager';
+import { googleSignIn, initializeFramework, logInUserWithEmailAndPassword , createUserWithEmailAndPassword} from './loginManager';
 
 
 const Login = () => {
+    const [loggedInUser,setLoggedInUser] = useContext(userContext)
     const [newUser,setNewUser] = useState(false);
     const [user, setUser] = useState({
         name:'',
         password:'',
         email:'',
-        isSignedIn:false
+        isSignedIn:false,
+        success:'',
+        error:''
     })//useState
 
     initializeFramework();
-
     const history = useHistory();
     const location = useLocation();
     const { from } = location.state || { from: { pathname: "/" } };
@@ -31,19 +32,25 @@ const Login = () => {
             history.replace(from);
         })
     }
-
-
-
-
-
-    const [loggedInUser,setLoggedInUser] = useContext(userContext)
     const handleSubmit = (e) => {
         if(newUser && user.email && user.password){
-            
+            createUserWithEmailAndPassword(user.name, user.email , user.password)
+            .then((res) => {
+                console.log(res);
+                setUser(res)
+                setLoggedInUser(res)
+                //history.replace(from)
+            })
               }//Create Account By Email && Password
 
            if(!newUser && user.email  && user.password){
-            
+            logInUserWithEmailAndPassword(user.email , user.password)
+            .then((res)=>{
+                console.log(res);
+                setUser(res);
+             setLoggedInUser(res);
+             history.replace(from);
+            })
            }//User Login
         e.preventDefault();
     }//handleSubmit
@@ -80,8 +87,9 @@ const Login = () => {
             <div className="buttons">
             <button onClick={handleGoogle} style={{padding:'10px 15px',background:'whitesmoke',}}><FontAwesomeIcon style={{marginRight:'5px'}} icon={faGoogle} />
             Sign In Google</button>
+            <p>{user.success}</p>
             </div>
-            <ToastContainer />
+            
         </>
     );
 };

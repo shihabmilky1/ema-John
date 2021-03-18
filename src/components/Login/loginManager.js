@@ -1,8 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import firebaseConfig from '../../firebase.config';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const initializeFramework = () => {
     if (!firebase.apps.length) {
@@ -19,61 +17,50 @@ export const googleSignIn = () => {
         .then((result) => {
             const userBio = result.user;
             const newUserInfo = {
-                name:userBio.displayName,
-                email:userBio.email,
+                name: userBio.displayName,
+                email: userBio.email,
             };
-            return newUserInfo
-
+            return newUserInfo;
         }).catch((error) => {
             var errorMessage = error.message;
-            toast.error(errorMessage, {
-                position: 'top-center',
-            }
-            );
+            return errorMessage;
         });
 }//googleSignIn
 
-// export const createUserWithEmailAndPassword = () => {
-//     firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
-//             .then((res) => {
-//                 mangeUser(user.name);
-//                 toast.success('Create Successful',{
-//                 position:'top-center',}
-//                 );
-//             })
-//             .catch((error) => {
-//               const errorMessage = error.message;
-//               toast.error(errorMessage,{
-//                 position:'top-center',}
-//                 );
-//            });
-// }
+export const createUserWithEmailAndPassword = (name , email, password) => {
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then((res) => {
+                const newUserInfo = res;
+                newUserInfo.success = 'Create Successful';
+                mangeUser(name);
+                 return newUserInfo;
+            })
+            .catch((error) => {
+              const errorMessage = error.message;
+                    return errorMessage;                
+           });
+}
 
-// export const logInUserWithEmailAndPassword = () => {
-//     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-//             .then((res) => {
-//                 toast.success('Login Successful',{
-//                     position:'top-center',}
-//                     );
-//                 setLoggedInUser(user);
-//                   history.replace(from);     
-//             })
-//             .catch((error) => {
-//                 const errorMessage = error.message;
-//                 toast.error(errorMessage,{
-//                     position:'top-center',}
-//                     );
-//             });
-// }
+export const logInUserWithEmailAndPassword = (email , password) => {
+  return  firebase.auth().signInWithEmailAndPassword(email , password)
+            .then((res) => {
+                const newUserInfo = res.user;
+              return newUserInfo;
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                    return errorMessage;
+            });
+}
 
-// const mangeUser = name => {
-//     const user = firebase.auth().currentUser;
-//         user.updateProfile({
-//         displayName: name,
-//         }).then((res) => {
-//         // Update successful.
-//         // console.log(res);
-//         }).catch((error) => {
-//         // An error happened.
-//         });
-// }//mangeUser
+const mangeUser = name => {
+    const user = firebase.auth().currentUser;
+        user.updateProfile({
+        displayName: name,
+        }).then((res) => {
+        // Update successful.
+        // console.log(res);
+        }).catch((error) => {
+        // An error happened.
+        });
+}//mangeUser
