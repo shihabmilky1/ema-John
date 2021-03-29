@@ -36,7 +36,6 @@ const Login = () => {
         if(newUser && user.email && user.password){
             createUserWithEmailAndPassword(user.name, user.email , user.password)
             .then((res) => {
-                console.log(res);
                 setUser(res)
                 setLoggedInUser(res)
                 //history.replace(from)
@@ -46,7 +45,6 @@ const Login = () => {
            if(!newUser && user.email  && user.password){
             logInUserWithEmailAndPassword(user.email , user.password)
             .then((res)=>{
-                console.log(res);
                 setUser(res);
              setLoggedInUser(res);
              history.replace(from);
@@ -88,6 +86,7 @@ const Login = () => {
             <button onClick={handleGoogle} style={{padding:'10px 15px',background:'whitesmoke',}}><FontAwesomeIcon style={{marginRight:'5px'}} icon={faGoogle} />
             Sign In Google</button>
             <p>{user.success}</p>
+            <p>{user.error}</p>
             </div>
             
         </>

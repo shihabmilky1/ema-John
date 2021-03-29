@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDatabaseCart, processOrder, removeFromDatabaseCart } from '../../utilities/databaseManager';
-import fakeData from '../../fakeData'
+// import fakeData from '../../fakeData'
 import ReviewItems from '../ReviewItems/ReviewItems';
 import './Review.css'
 import Cart from '../Cart/Cart';
@@ -24,13 +24,20 @@ const Review = () => {
         // cart
         const saveCart = getDatabaseCart();
         const productKey = Object.keys(saveCart)
-        const CartProduct = productKey.map(key => {
-            const product = fakeData.find(pd=> pd.key === key)
-            product.quantity = saveCart[key];
-            console.log(saveCart[key])
-            return product;
-        });
-        setCart(CartProduct)
+        fetch('https://obscure-shore-45833.herokuapp.com/productByKeys',{
+            method: 'POST',
+            headers : {"Content-Type" :"application/json"},
+            body: JSON.stringify(productKey)
+        })
+        .then(res => res.json())
+        .then(data => setCart(data))
+        // const CartProduct = productKey.map(key => {
+        //     const product = fakeData.find(pd=> pd.key === key)
+        //     product.quantity = saveCart[key];
+        //     console.log(saveCart[key])
+        //     return product;
+        // });
+        // setCart(CartProduct)
     },[])
     let thank;
     if (placeOrdered) {

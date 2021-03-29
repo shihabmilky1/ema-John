@@ -6,19 +6,35 @@ import Product from '../Product/Product';
 import './Shop.css'
 import { Link } from 'react-router-dom';
 const Shop = () => {  
-  const firts10 = fakeData.slice(0,10);
-  const [products, setProducts]  = useState(firts10);
+  const [products, setProducts]  = useState([]);
   const [cart,setCart] = useState([]);
+
+    useEffect(()=>{
+        fetch('https://obscure-shore-45833.herokuapp.com/products')
+        .then(res => res.json())
+        .then(data => setProducts(data))
+    },[])
+
+
 
   useEffect(() =>{
     const saveCart = getDatabaseCart();
     const productKeys = Object.keys(saveCart);
-    const previousCart = productKeys.map( pdkey =>{
-        const product = fakeData.find(pd => pd.key === pdkey);
-        product.quantity = saveCart[pdkey];
-        return product;
+    fetch('http://localhost:5000/productByKeys',{
+        method: 'POST',
+        headers : {"Content-Type" :"application/json"},
+        body: JSON.stringify(productKeys)
     })
-    setCart(previousCart)
+    .then(res => res.json())
+    .then(data => setCart(data))
+    // if(products.length > 0){
+    //     const previousCart = productKeys.map( pdkey =>{
+    //         const product = products.find(pd => pd.key === pdkey);
+    //         product.quantity = saveCart[pdkey];
+    //         return product;
+    //     })
+    //     setCart(previousCart)
+    // }
   },[])
 
   const handleAddProduct = (product) => {
@@ -27,9 +43,9 @@ const Shop = () => {
     let newCart;
     if (sameProduct) {
         count = sameProduct.quantity + 1;
-        console.log(count);
+        // console.log(count);
         sameProduct.quantity = count;
-        console.log(sameProduct.quantity);
+        // console.log(sameProduct.quantity);
         const others = cart.filter(pd => pd.key !== product.key);
         newCart = [...others,sameProduct]
     }

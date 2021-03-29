@@ -24,9 +24,9 @@ function App() {
       <Router>
       <Header></Header>
         <Switch>
-          <PrivetRoute path="/shop">
+          <Route path="/shop">
             <Shop></Shop>
-          </PrivetRoute>
+          </Route>
           <Route path="/review">
             <Review></Review>
           </Route>

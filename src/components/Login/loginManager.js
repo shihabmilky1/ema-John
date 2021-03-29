@@ -31,12 +31,16 @@ export const createUserWithEmailAndPassword = (name , email, password) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((res) => {
                 const newUserInfo = res;
+                newUserInfo.error = '';
                 newUserInfo.success = 'Create Successful';
                 mangeUser(name);
                  return newUserInfo;
             })
             .catch((error) => {
               const errorMessage = error.message;
+              const newUserInfo = {};
+              newUserInfo.success = '';
+              newUserInfo.error = errorMessage;
                     return errorMessage;                
            });
 }
@@ -45,10 +49,15 @@ export const logInUserWithEmailAndPassword = (email , password) => {
   return  firebase.auth().signInWithEmailAndPassword(email , password)
             .then((res) => {
                 const newUserInfo = res.user;
+                newUserInfo.error = '';
+                newUserInfo.success = 'Login Successful';
               return newUserInfo;
             })
             .catch((error) => {
                 const errorMessage = error.message;
+                const newUserInfo = {};
+                newUserInfo.success = '';
+                newUserInfo.error = errorMessage;
                     return errorMessage;
             });
 }
