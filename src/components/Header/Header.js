@@ -12,7 +12,8 @@ const Header = () => {
                 <Link to="/shop">Shop</Link>
                 <Link to="/review">Review</Link>
                 <Link to="/manage">Manage Inventory here</Link>
-               {loggedInUser.email && <button onClick={()=>setLoggedInUser({})}>{loggedInUser.email && <b>Sign out</b>}</button>}
+               {(loggedInUser.email || sessionStorage.getItem('token')) && <button onClick={()=>{setLoggedInUser({}); sessionStorage.removeItem('token') }}><b>Sign out</b></button>}
+               
             </nav>
         </div>
     );

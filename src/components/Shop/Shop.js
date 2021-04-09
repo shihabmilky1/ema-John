@@ -8,19 +8,19 @@ import { Link } from 'react-router-dom';
 const Shop = () => {  
   const [products, setProducts]  = useState([]);
   const [cart,setCart] = useState([]);
-
+  const [search,setSearch] = useState('');
     useEffect(()=>{
-        fetch('https://obscure-shore-45833.herokuapp.com/products')
+        fetch('https://obscure-shore-45833.herokuapp.com/products?search=' + search)
         .then(res => res.json())
         .then(data => setProducts(data))
-    },[])
+    },[search])
 
 
 
   useEffect(() =>{
     const saveCart = getDatabaseCart();
     const productKeys = Object.keys(saveCart);
-    fetch('http://localhost:5000/productByKeys',{
+    fetch('https://obscure-shore-45833.herokuapp.com/productByKeys',{
         method: 'POST',
         headers : {"Content-Type" :"application/json"},
         body: JSON.stringify(productKeys)
@@ -56,8 +56,17 @@ const Shop = () => {
       setCart(newCart);
       addToDatabaseCart(product.key,count)
   }
+  const handleSearch = e => {
+    setSearch(e.target.value)
+  } 
     return (
+        <>
+       <div className="d-flex align-items-start">
+       <input style={{border:'1px solid orange'}} onChange={handleSearch} type="text" className="form-control mb-4 btn"/>
+        <button className="btn btn-info">Search</button>
+       </div>
         <div className="shop-container">
+            
             <div className="product-container">
                 {
                     products.map(product => <Product key={product.key} showAddToCart={true} product={product} handleAddProduct={handleAddProduct}></Product>)
@@ -72,6 +81,7 @@ const Shop = () => {
             </div>
 
         </div>
+        </>
     );
 };
 

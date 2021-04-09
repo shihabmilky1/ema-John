@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
 import { userContext } from '../../App';
 import { getDatabaseCart , processOrder } from '../../utilities/databaseManager';
 import ProcessPayment from '../ProcessPayment/ProcessPayment';
@@ -7,9 +8,15 @@ import ProcessPayment from '../ProcessPayment/ProcessPayment';
 const Shipment = () => {
   const [loggedInUser, setLoggedInUser] = useContext(userContext);
     const { register, handleSubmit, watch, errors } = useForm();
+    const [shipmentData,setShipmentData] = useState(null)
     const onSubmit = data => {
+      setShipmentData(data)
+    };
+    const history = useHistory()
+    const HandlePaymentSuccess = paymentId => {
       const saveCart = getDatabaseCart();
-      const orderDetails = {...loggedInUser, products: saveCart, shipments : data, orderTime : new Date()}
+      
+      const orderDetails = {...loggedInUser, products: saveCart, paymentId, shipments : shipmentData, orderTime : new Date()}
       fetch('https://obscure-shore-45833.herokuapp.com/placeOrder',{
         method: "POST",
         headers : {"Content-Type": "application/json"},
@@ -20,16 +27,17 @@ const Shipment = () => {
         if(data){
           processOrder();
           alert('Order Success')
+          history.push('/')
         }
       } )
-    };
+    }
    
     // console.log(watch("example")); 
   
     return (
       <div className="container">
         <div className="row mt-5 pt-5">
-          <div className="col-md-6">
+          <div style={{display :shipmentData ? 'none' : 'block'}} className="col-md-6">
           <form onSubmit={handleSubmit(onSubmit)}>
         <input name="name" placeholder='Your Name' defaultValue={loggedInUser.name} ref={register({ required: true })} />
         {errors.name && <span style={{color: 'red'}}>Name is required</span>}        
@@ -45,8 +53,8 @@ const Shipment = () => {
         <input type="submit" style={{background:'black',color:'white',padding:'10px 20px',cursor:'pointer'}} />
       </form>
           </div>
-          <div className="col-md-6">
-            <ProcessPayment></ProcessPayment>
+          <div style={{display : shipmentData ? 'block' : 'none'}}  className="col-md-6">
+            <ProcessPayment handlePaymentSuccess={HandlePaymentSuccess} ></ProcessPayment>
           </div>
       </div>
       </div>
