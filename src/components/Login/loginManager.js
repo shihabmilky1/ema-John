@@ -20,6 +20,7 @@ export const googleSignIn = () => {
                 name: userBio.displayName,
                 email: userBio.email,
             };
+            userToken()
             return newUserInfo;
         }).catch((error) => {
             var errorMessage = error.message;
@@ -51,7 +52,9 @@ export const logInUserWithEmailAndPassword = (email , password) => {
                 const newUserInfo = res.user;
                 newUserInfo.error = '';
                 newUserInfo.success = 'Login Successful';
+                userToken()
               return newUserInfo;
+              
             })
             .catch((error) => {
                 const errorMessage = error.message;
@@ -60,6 +63,14 @@ export const logInUserWithEmailAndPassword = (email , password) => {
                 newUserInfo.error = errorMessage;
                     return errorMessage;
             });
+}
+
+const userToken = () => {
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        sessionStorage.setItem('token',idToken)
+      }).catch(function(error) {
+        // Handle error
+      });
 }
 
 const mangeUser = name => {
