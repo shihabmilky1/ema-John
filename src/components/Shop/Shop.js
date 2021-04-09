@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import fakeData from '../../fakeData'
 import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
@@ -62,7 +61,7 @@ const Shop = () => {
     return (
         <>
        <div className="d-flex align-items-start">
-       <input style={{border:'1px solid orange'}} onChange={handleSearch} type="text" className="form-control mb-4 btn"/>
+       <input placeholder="Search" style={{border:'1px solid orange'}} onChange={handleSearch} type="text" className="form-control mb-4 btn"/>
         <button className="btn btn-info">Search</button>
        </div>
         <div className="shop-container">
